@@ -1,0 +1,10 @@
+--Upit za pretragu itema bi mogao izgledati ovako:
+
+SELECT ? FROM ? WHERE ? LIKE '%rijec%';
+
+--? u ovom slucaju oznacava da ne znamo kako se zovu tabele i kolone (posto ni napadac to ne zna)
+
+--ako umjesto rijec stavimo ':
+
+SELECT ? FROM ? WHERE ? LIKE '%';--%';
+

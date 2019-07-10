@@ -20,7 +20,7 @@ class Cart extends React.Component {
     componentDidMount() {
         //items in cart
         axios
-            .get("http://localhost:8080/cart/items/" + this.state.cartId)
+            .get("https://zavrsni2019-backend-protected.herokuapp.com/cart/items/" + this.state.cartId)
             .then(res => {
                 if (res.data.success) {
                     this.setState({
@@ -35,7 +35,7 @@ class Cart extends React.Component {
     }
     handleRemove = (itemId) => {
         axios
-            .delete("http://localhost:8080/cart/delete", {
+            .delete("https://zavrsni2019-backend-protected.herokuapp.com/cart/delete", {
                 data: {
                     cartItemId: itemId
                 }
@@ -44,7 +44,7 @@ class Cart extends React.Component {
                 //re-render
                 if (res.data.success) {
                     axios
-                        .get("http://localhost:8080/cart/items/" + this.state.cartId)
+                        .get("https://zavrsni2019-backend-protected.herokuapp.com/cart/items/" + this.state.cartId)
                         .then(res => {
                             if (res.data.success) {
                                 this.setState({

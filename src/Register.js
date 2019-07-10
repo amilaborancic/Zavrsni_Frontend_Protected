@@ -90,7 +90,7 @@ class Register extends React.Component {
             //hash sifre (verzija 2)
             //sifra duga 8 chara (verzija 2)
             axios
-                .post("http://localhost:8080/register", {
+                .post("https://zavrsni2019-backend-protected.herokuapp.com/register", {
                     name: novi.name.value,
                     lastName: novi.lastName.value,
                     email: novi.email.value,

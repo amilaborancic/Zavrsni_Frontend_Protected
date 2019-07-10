@@ -20,7 +20,7 @@ class Profile extends React.Component {
     }
     componentDidMount(){
         axios
-            .get("http://localhost:8080/customer/info/" + this.state.userId)
+            .get("https://zavrsni2019-backend-protected.herokuapp.com/customer/info/" + this.state.userId)
             .then(res=>{
                 if(res.data.success){
                     var user = res.data.data[0];
@@ -42,7 +42,7 @@ class Profile extends React.Component {
                 console.log(err);
             })
             axios
-                .get("http://localhost:8080/cart/" + this.state.userId)
+                .get("https://zavrsni2019-backend-protected.herokuapp.com/cart/" + this.state.userId)
                 .then(res=>{
                     if(res.data.success){
                         window.localStorage.setItem("cartId", res.data.data[0].cart_id);

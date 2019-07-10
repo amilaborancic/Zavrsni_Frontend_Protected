@@ -42,7 +42,7 @@ class Home extends React.Component {
                 porukica: "",
             })
             axios
-                .post("http://localhost:8080/login", {
+                .post("https://zavrsni2019-backend-protected.herokuapp.com/login", {
                     email: user.email.value,
                     password: user.pass.value
                 })

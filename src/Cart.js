@@ -13,12 +13,13 @@ class Cart extends React.Component {
         this.state = {
             itemList: [],
             userId: window.localStorage.getItem("userId"),
-            cartId: window.localStorage.getItem("cartId")
+            cartId: window.localStorage.getItem("cartId"),
         }
     }
 
     componentDidMount() {
         //items in cart
+        
         axios
             .get("https://zavrsni2019-backend-protected.herokuapp.com/cart/items/" + this.state.cartId)
             .then(res => {

@@ -8,6 +8,7 @@ import axios from "axios";
 import "bootstrap";
 
 class Home extends React.Component {
+    _isMounted = false;
     constructor() {
         super();
         this.state = {
@@ -17,29 +18,33 @@ class Home extends React.Component {
         }
     }
     handleRedirect = () => {
-        if (this.state.redirectaj) return <Redirect to="/profile" />
+
+        if (this._isMounted && this.state.redirectaj) return <Redirect to="/profile" />
     }
     componentDidMount() {
         window.localStorage.clear();
+        this._isMounted = true;
 
+    }
+    componentWillUnmount() {
+        this._isMounted = false;
     }
     handleClickLogIn = (e) => {
         e.preventDefault();
         //ovdje ubaciti validacije za broken auth
         var user = e.target;
-        if ((user.email.value == "" && user.pass.value == "") || (user.email.value!="" && user.pass.value=="") || (user.email.value == "" && user.pass.value != "")) {
-            user.both.className="form-control is-invalid";
+        if ((user.email.value == "" && user.pass.value == "") || (user.email.value != "" && user.pass.value == "") || (user.email.value == "" && user.pass.value != "")) {
+
             this.setState({
-                porukica: "Both fields must be filled!"
+                porukica: "Both fields must be filled!",
+                visibility: "visible"
             })
         }
         else {
             //moze se desiti da pogresno sifru unese
-            user.both.className="form-control";
-            user.email.className="form-control";
-            user.pass.className="form-control";
             this.setState({
                 porukica: "",
+                visibility: "hidden"
             })
             axios
                 .post("https://zavrsni2019-backend-protected.herokuapp.com/login", {
@@ -47,31 +52,40 @@ class Home extends React.Component {
                     password: user.pass.value
                 })
                 .then(res => {
-                    if (res.data.success) {
-                        //upisemo u localstorage
-                        console.log(res.data.data[0].user_id);
-                        window.localStorage.setItem('userId', res.data.data[0].user_id)
-
-                        this.props.history.push("/profile");
-                        this.setState({
-                            class: "",
-                            porukica: "",
-                            redirectaj: true
-                        })
-                    }
-                    else {
-                        //email i pass dont match
-                        this.setState({
-                            class: "form-control is-invalid",
-                            porukica: "Wrong credentials!"
-                        })
+                    if (this._isMounted) {
+                        if (res.data.success) {
+                            //upisemo u localstorage
+                            window.localStorage.setItem('userId', res.data.data[0].user_id)
+                            window.localStorage.setItem('name', res.data.data[0].name);
+                            window.localStorage.setItem('last_name', res.data.data[0].last_name);
+                            window.localStorage.setItem('address', res.data.data[0].address);
+                            window.localStorage.setItem('phone', res.data.data[0].phone);
+                            window.localStorage.setItem('credit_card', res.data.data[0].credit_card);
+                            window.localStorage.setItem('email', res.data.data[0].email);
+                            this.setState({
+                                class: "",
+                                porukica: "",
+                                visibility: "hidden",
+                                redirectaj: true
+                            })
+                            
+                            this.props.history.push("/profile");
+                            return <Redirect to="/profile"></Redirect>
+                        }
+                        else {
+                            //email i pass dont match
+                            this.setState({
+                                porukica: "Wrong credentials!",
+                                visibility: "visible"
+                            })
+                        }
                     }
                 })
                 .catch(err => {
                     console.log(err);
                     this.setState({
-                        class: "form-control is-invalid",
-                        porukica: "Wrong credentials!"
+                        porukica: "Wrong credentials!",
+                        visibility: "visible"
                     })
                 })
 
@@ -106,7 +120,7 @@ class Home extends React.Component {
                                 </div>
                                 <div className="d-flex justify-content-center">
                                     <form onSubmit={this.handleClickLogIn}>
-                                        <input type="text" placeholder="Email" name="email" id="emailLogin" className={this.state.class}
+                                        <input type="text" placeholder="Email" name="email" id="emailLogin" className="form-control"
                                             style={{
                                                 marginTop: "10px",
                                                 width: "450px",
@@ -116,8 +130,7 @@ class Home extends React.Component {
                                                 fontEeight: "lighter",
                                                 border: "1px solid #dddddd"
                                             }} />
-                                        <br></br>
-                                        <input type="password" placeholder="Password" name="pass" id="passwordLogin" className={this.state.class}
+                                        <input type="password" placeholder="Password" name="pass" id="passwordLogin" className="form-control"
                                             style={{
                                                 marginTop: "20px",
                                                 width: "450px",
@@ -127,13 +140,11 @@ class Home extends React.Component {
                                                 fontEeight: "lighter",
                                                 border: "1px solid #dddddd"
                                             }} />
-                                        <input id="both" name="both" hidden className=""></input>
-                                        <div className="invalid-feedback" htmlFor="#passwordLogin">{this.state.porukica}</div>
-                                        <br></br>
+                                        <input id="both" name="both" hidden className="form-control is-invalid"></input>
+                                        <div className="invalid-feedback" htmlFor="#both" style={{ visibility: this.state.visibility }}>{this.state.porukica}</div>
+
                                         <Link to="/register" style={{ marginTop: "10px" }}>New user? Register here.</Link>
 
-                                        {this.handleRedirect()}
-                                        <br></br>
                                         <br></br>
                                         <button
                                             type="submit"

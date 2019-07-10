@@ -8,44 +8,24 @@ class Profile extends React.Component {
     constructor() {
         super();
         this.state = {
-            name: "neko",
-            lastName: "kjdfnjd",
-            address: "m",
-            phone: "8967",
-            card: "xxxxx",
-            email: "jnk@jvf",
+            name: window.localStorage.getItem('name'),
+            lastName: window.localStorage.getItem('last_name'),
+            address: window.localStorage.getItem('address'),
+            phone: window.localStorage.getItem('phone'),
+            card: window.localStorage.getItem('credit_card'),
+            email: window.localStorage.getItem('email'),
             userId: window.localStorage.getItem('userId'),
             cartId: null
         }
     }
     componentDidMount(){
-        axios
-            .get("https://zavrsni2019-backend-protected.herokuapp.com/customer/info/" + this.state.userId)
-            .then(res=>{
-                if(res.data.success){
-                    var user = res.data.data[0];
-                    //prikazi info
-                    this.setState({
-                        name: user.name,
-                        lastName: user.last_name,
-                        address: user.address,
-                        phone: user.phone,
-                        card: user.credit_card,
-                        email: user.email
-                    })
-                }
-                else{
-                    //nez
-                }
-            })
-            .catch(err=>{
-                console.log(err);
-            })
+        
             axios
                 .get("https://zavrsni2019-backend-protected.herokuapp.com/cart/" + this.state.userId)
                 .then(res=>{
                     if(res.data.success){
                         window.localStorage.setItem("cartId", res.data.data[0].cart_id);
+                        
                         this.setState({
                             cartId: window.localStorage.getItem("cartId")
                         })
@@ -67,21 +47,21 @@ class Profile extends React.Component {
                     }}>
                     <div className="d-flex justify-content-center" style={{ height: "100%" }}>
                         <div className="d-flex align-items-center" >
-                            <div class="row">
+                            <div className="row">
 
-                                <div class="col" style={{ maxWidth: "500px" }}>
+                                <div className="col" style={{ maxWidth: "500px" }}>
                                     <Title text="I N F O"/>
-                                    <div class="card">
-                                        <div class="card-body" style={{
+                                    <div className="card">
+                                        <div className="card-body" style={{
                                             textAlign: "left"
                                         }}>
 
-                                            <div class="form-group">
-                                                <label class="col-form-label col-form-label-lg">Name</label>
+                                            <div className="form-group">
+                                                <label className="col-form-label col-form-label-lg">Name</label>
                                                 <br></br>
-                                                <label class="col-form-label">{this.state.name} {this.state.lastName}</label>
+                                                <label className="col-form-label">{this.state.name} {this.state.lastName}</label>
                                             </div>
-                                            <div class="form-group">
+                                            <div className="form-group">
                                                 <label class="col-form-label col-form-label-lg">Email</label>
                                                 <br></br>
                                                 <label class="col-form-label">{this.state.email}</label>

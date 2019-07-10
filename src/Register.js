@@ -9,55 +9,57 @@ class Register extends React.Component {
         this.state = {
             redirectaj: false,
             invalidClass: "form-control form-control-lg is-invalid",
-            class: "form-control form-control-lg"
+            class: "form-control form-control-lg",
         }
     }
     validateAll = (e) => {
         var novi = e.target;
-        var tel = novi.phone.value;
-        var card = novi.creditCard.value;
-        var sif = novi.pass.value;
-        var con_sif = novi.confirm.value;
-        var ok = false;
-        if (novi.name.value == "" || novi.lastName.value == "" || novi.email.value == "" || card == "" || tel == ""
-            || novi.address.value == "" || sif == "" || con_sif == "") {
-            this.setState({
-                class: "form-control form-control-lg is-invalid"
-            })
-            ok = false;
-        }
-        else {
-            this.setState({
-                class: "form-control form-control-lg"
-            })
-            ok = true;
-        }
+        let fieldToValidate = [{field:novi.name, div:""}, {field:novi.lastName,div:""}, {field:novi.email,div:""}, {field:novi.address,div:""}, {field:novi.phone,div:"phoneDiv"}, {field:novi.creditCard,div:"cardDiv"},{field:novi.pass,div:""},{field:novi.confirm,div:"matchDiv"}];
+        let ok = true;
+
+        fieldToValidate.forEach(x=>{
+            if(x.field.value=="" || x.field.value==null){
+               x.field.className = "form-control form-control-lg is-invalid";
+               if(x.div != "") document.getElementsByName(x.div)[0].style.visibility="visible";
+               ok = false;
+            }
+            else{
+                if(x.div != "") document.getElementsByName(x.div)[0].style.visibility="hidden";
+            }
+        })
+       
         return ok;
+
     }
     validateTel = (e) => {
         var novi = e.target;
         var tel = novi.phone.value;
+        let phoneDiv = document.getElementsByName("phoneDiv")[0].style;
         if (isNaN(tel)) {
             //provjera telefona
             novi.phone.className = this.state.invalidClass;
+            phoneDiv.visibility="visible";
             return false;
         }
         else {
-            novi.phone.className = "form-control form-control-lg";
+            novi.phone.className = this.state.class;
+            phoneDiv.visibility="hidden";
             return true;
-
         }
     }
     validateCard = (e) => {
         var novi = e.target;
         var card = novi.creditCard.value;
+        var cardDiv = document.getElementsByName("cardDiv")[0].style;
         if (isNaN(card)) {
             //provjera kartice
             novi.creditCard.className = this.state.invalidClass;
+            cardDiv.visibility = "visible";
             return false;
         }
         else {
-            novi.creditCard.className = "form-control form-control-lg";
+            novi.creditCard.className = this.state.class;
+            cardDiv.visibility = "hidden";
             return true;
         }
     }
@@ -65,32 +67,31 @@ class Register extends React.Component {
         var novi = e.target;
         var sif = novi.pass.value;
         var con_sif = novi.confirm.value;
-
+        var matchDiv = document.getElementsByName("matchDiv")[0].style;
         if (sif != con_sif) {
             //provjera slaganja sifri
+           
             novi.confirm.className = this.state.invalidClass;
             novi.pass.className = this.state.invalidClass;
+            matchDiv.visibility = "visible";
             return false;
         }
         else {
-            novi.confirm.className = "form-control form-control-lg";
-            novi.pass.className = "form-control form-control-lg";
+            
+            novi.confirm.className = this.state.class;
+            novi.pass.className = this.state.class;
+            matchDiv.visibility = "hidden";
             return true;
         }
     }
     handleSubmit = (e) => {
         e.preventDefault();
-        this.setState({
-            isLoading: true
-        })
-        if (this.validateAll(e) && this.validateCard(e) && this.validatePass(e) && this.validateTel(e)) {
+        if (this.validateCard(e) && this.validatePass(e) && this.validateTel(e) && this.validateAll(e)) {
             //prosla validacija
             var novi = e.target;
             this.setState({
                 class: "form-control form-control-lg"
             })
-            //hash sifre (verzija 2)
-            //sifra duga 8 chara (verzija 2)
             axios
                 .post("https://zavrsni2019-backend-protected.herokuapp.com/register", {
                     name: novi.name.value,
@@ -106,7 +107,8 @@ class Register extends React.Component {
                         //prikazemo modal
                         document.getElementsByName("skriveni")[0].click();
                     }
-
+                    else{
+                    }
                 })
                 .catch(err => {
                     console.log(err);
@@ -169,13 +171,14 @@ class Register extends React.Component {
                                     <input type="password" class={this.state.class} placeholder="PASSWORD" name="pass" />
                                     <br></br>
                                     <input type="password" class={this.state.class} placeholder="CONFIRM PASSWORD" name="confirm" id="match" />
-                                    <div htmlFor="#match" className="invalid-feedback">Passwords don't match.</div>
+                                    <div htmlFor="#match" className="invalid-feedback" name="matchDiv">Passwords are incorrect.</div>
                                     <br></br>
                                     <input type="text" class={this.state.class} placeholder="PHONE" id="phone" name="phone" />
-                                    <div htmlFor="#phone" className="invalid-feedback">Phone must be a number.</div>
+                                    <div htmlFor="#phone" className="invalid-feedback" name="phoneDiv">Phone must be a number.</div>
                                     <br></br>
                                     <input type="text" class={this.state.class} id="credit" placeholder="CREDIT CARD" name="creditCard" />
-                                    <div htmlFor="#credit" className="invalid-feedback">Credit card must be a number.</div>
+                                    <div htmlFor="#credit" className="invalid-feedback" name="cardDiv" id="cardDiv">Credit card must be a number.</div>
+                                    
                                     <br></br>
                                     <button
                                         style={{

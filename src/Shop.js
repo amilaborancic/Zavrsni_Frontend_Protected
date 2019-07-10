@@ -73,14 +73,14 @@ class Shop extends React.Component {
                     console.log(err);
                     this.setState({
                         prikazi: false,
-                        emptyMsg: ""
+                        emptyMsg: <label>There aren't any products with that name.</label>
                     })
                 })
         }
         else {
             this.setState({
                 prikazi: false,
-                emptyMsg: ""
+                emptyMsg: <label>There aren't any products with that name.</label>
             })
         }
 

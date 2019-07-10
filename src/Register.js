@@ -34,13 +34,13 @@ class Register extends React.Component {
         }
         return ok;
     }
-    validateTel = (e)=>{
+    validateTel = (e) => {
         var novi = e.target;
         var tel = novi.phone.value;
         if (isNaN(tel)) {
             //provjera telefona
             novi.phone.className = this.state.invalidClass;
-           return false;
+            return false;
         }
         else {
             novi.phone.className = "form-control form-control-lg";
@@ -48,7 +48,7 @@ class Register extends React.Component {
 
         }
     }
-    validateCard = (e)=>{
+    validateCard = (e) => {
         var novi = e.target;
         var card = novi.creditCard.value;
         if (isNaN(card)) {
@@ -80,7 +80,9 @@ class Register extends React.Component {
     }
     handleSubmit = (e) => {
         e.preventDefault();
-
+        this.setState({
+            isLoading: true
+        })
         if (this.validateAll(e) && this.validateCard(e) && this.validatePass(e) && this.validateTel(e)) {
             //prosla validacija
             var novi = e.target;
@@ -117,6 +119,7 @@ class Register extends React.Component {
     render() {
         return (
             <>
+                
                 <div className="container-fluid"
                     style={{
                         backgroundColor: "#efefef",

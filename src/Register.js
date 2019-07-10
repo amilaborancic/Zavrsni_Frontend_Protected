@@ -37,7 +37,7 @@ class Register extends React.Component {
     validateTel = (e)=>{
         var novi = e.target;
         var tel = novi.phone.value;
-        if (isNaN(parseInt(tel))) {
+        if (isNaN(tel)) {
             //provjera telefona
             novi.phone.className = this.state.invalidClass;
            return false;
@@ -51,7 +51,7 @@ class Register extends React.Component {
     validateCard = (e)=>{
         var novi = e.target;
         var card = novi.creditCard.value;
-        if (isNaN(parseInt(card))) {
+        if (isNaN(card)) {
             //provjera kartice
             novi.creditCard.className = this.state.invalidClass;
             return false;

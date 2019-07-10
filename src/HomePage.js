@@ -63,12 +63,16 @@ class Home extends React.Component {
                         //email i pass dont match
                         this.setState({
                             class: "form-control is-invalid",
-                            porukica: "The email and password don't match."
+                            porukica: "Wrong credentials!"
                         })
                     }
                 })
                 .catch(err => {
                     console.log(err);
+                    this.setState({
+                        class: "form-control is-invalid",
+                        porukica: "Wrong credentials!"
+                    })
                 })
 
         }

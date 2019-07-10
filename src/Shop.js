@@ -14,70 +14,76 @@ class Shop extends React.Component {
             cartId: window.localStorage.getItem("cartId"),
             show: "hidden",
             addedToCart: [],
-            keyword:"",
-            emptyMsg:"",
-            prikazi:false
+            keyword: "",
+            emptyMsg: "",
+            prikazi: false
         }
     }
 
     componentDidMount() {
         axios
             .get("http://localhost:8080/items")
-            .then(res=>{
-                if(res.data.success){
+            .then(res => {
+                if (res.data.success) {
                     this.setState({
                         items: res.data.data
                     })
                 }
                 console.log(res.data.data);
             })
-            .catch(err=>{
+            .catch(err => {
                 console.log(err);
             })
     }
     handleChange = (e) => {
         //searchbar
         this.setState({
-            keyword:e.target.value
+            keyword: e.target.value
         })
     }
     handleSearch = (e) => {
         e.preventDefault();
-        if(this.state.keyword!=""){
+        if (this.state.keyword != "") {
             axios
-            .get("http://localhost:8080/search/" + this.state.keyword)
-            .then(res => {
-                if (res.data.success) {
-                    if(res.data.data.length==0){
+                .get("http://localhost:8080/search/" + this.state.keyword)
+                .then(res => {
+                    if (res.data.success) {
+                        if (res.data.data.length == 0) {
+                            this.setState({
+                                emptyMsg: <label>There aren't any products with that name.</label>,
+                                prikazi: false
+                            })
+                        }
+                        else {
+                            this.setState({
+                                emptyMsg: "",
+                                items: res.data.data,
+                                prikazi: true
+                            })
+                        }
+                    }
+                    else {
                         this.setState({
-                            emptyMsg:<label>There aren't any products with that name.</label>,
-                            prikazi:false
+                            emptyMsg: <label>There aren't any products with that name.</label>,
+                            prikazi: false
                         })
                     }
-                    else{
-                        this.setState({
-                            emptyMsg:"",
-                            items:res.data.data,
-                            prikazi:true
-                        })
-                    }
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                this.setState({
-                    prikazi:false,
-                    emptyMsg:""
                 })
-            })
+                .catch(err => {
+                    console.log(err);
+                    this.setState({
+                        prikazi: false,
+                        emptyMsg: ""
+                    })
+                })
         }
-        else{
+        else {
             this.setState({
-                prikazi:false,
-                emptyMsg:""
+                prikazi: false,
+                emptyMsg: ""
             })
         }
-        
+
     }
     addToCart = (itemId) => {
         axios
@@ -133,7 +139,7 @@ class Shop extends React.Component {
                                         boxSizing: "border-box"
                                     }}
                                     name="searchbar"
-                                    onChange={(e)=>this.handleChange(e)}
+                                    onChange={(e) => this.handleChange(e)}
                                 />
                                 <button
                                     style={{
@@ -144,7 +150,7 @@ class Shop extends React.Component {
                                         border: "0px",
                                         color: "white"
                                     }}
-                                    onClick={(e)=>this.handleSearch(e)}>
+                                    onClick={(e) => this.handleSearch(e)}>
                                     SEARCH</button>
                             </form>
                             <br></br>
@@ -152,7 +158,7 @@ class Shop extends React.Component {
                         </div>
                     </div>
                     <div className="row mt-5 mx-2">
-                        
+
                         {this.state.prikazi ? this.state.items.map(x =>
                             <>
                                 <Item itemName={x.result.name} itemPrice={x.result.price + "$"} itemCategory={x.result.category} src={x.imgUrl} value="ADD TO CART" onClick={() => this.addToCart(x.result.item_id)} />
